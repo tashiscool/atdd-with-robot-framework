@@ -2,6 +2,7 @@ from javax.swing import JFrame, JList, JPanel, JLabel, JTextField, JButton, Box,
 from javax.swing.event import ListSelectionListener
 from java.awt.event import ActionListener
 from java.awt import FlowLayout, BorderLayout, Dimension, Font, Color
+from java.lang import Object
 
 
 class VacalcFrame(object):
@@ -195,6 +196,5 @@ class Welcome(JPanel):
 
 
 def ListenerFactory(interface, func):
-    from java.lang import Object
     method = list(set(dir(interface)) - set(dir(Object)))[0]
     return type('Listener', (interface,), {method: func})()
