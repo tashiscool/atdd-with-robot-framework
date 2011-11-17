@@ -1,5 +1,5 @@
 *** Settings ***
-Force Tags    Regression  Sprint-1
+Force Tags    Regression    Sprint-1
 Resource      resource.txt
 
 
@@ -31,34 +31,32 @@ Employee list is sorted alphabetically
     and "DDD" with start date 2010-01-01 is added
     and "AAA" with start date 2010-01-01 is added
     and "CCC" with start date 2010-01-01 is added
-    Then "AAA", "CCC", "DDD", "ZZZ" is the order of the list
+    Then "AAA, CCC, DDD, ZZZ" is the order of the list
+
 
 *** Keywords ***
 
-no employee "${name}" exists in the system
+No employee "${name}" exists in the system
     Start Vacalc with no employees
 
 "${name}" with start date ${date} is added
-    Add employee  ${name}  ${date}
+    Add employee    ${name}    ${date}
 
-message "${message}" is shown
-    Status message should be  ${message}
+Message "${message}" is shown
+    Status message should be    ${message}
 
-then ${names} is the order of the list
-    ${names} =  Evaluate  [${names}]
-    ${actual} =  Get all employee names
-    Should be equal  ${names}  ${actual}
+"${names}" is the order of the list
+    Application should have employees    ${names}
 
 "${name}" exists in the employee listing
-    Employee should be selected  ${name}
+    Employee should be selected    ${name}
 
 "${name}" with start date ${date} exists in the database
-    Employee should exist in the database  ${name}  ${date}
+    Employee should exist in the database    ${name}    ${date}
 
-no employee exists in the system
+No employee exists in the system
     Start Vacalc with no employees
 
-employee "${name}" with start date ${date} exists in the system
+Employee "${name}" with start date ${date} exists in the system
     Start Vacalc with no employees
-    Add employee  ${name}  ${date}
-
+    Add employee    ${name}    ${date}

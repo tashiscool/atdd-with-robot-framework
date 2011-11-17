@@ -1,13 +1,13 @@
 *** Settings ***
-Force Tags     Sprint-1  Regression
-Resource       resource.txt
-Test Template  Validate valid name
+Force Tags       Sprint-1    Regression
+Resource         resource.txt
+Test Template    Validate valid name
 
 *** Variables ***
-${DATE}  2010-04-01
+${DATE}    2010-04-01
 
 
-***Test Cases***
+*** Test Cases ***
 
 Valid name
     Hans Martin Schulz
@@ -20,19 +20,19 @@ Non-ASCII names
     Yrjö Hämäläinen
 
 Empty name is not allowed
-    [Template]  Validate name
-    ${EMPTY}  No name given.
+    [Template]    Validate name
+    ${EMPTY}    No name given.
 
-*** Keyword ***
+
+*** Keywords ***
 
 Validate valid name
-    [Arguments]  ${name}
-    Validate name  ${name}  Employee '${name}' was added successfully.
-    Employee should exist in the database  ${name}  ${DATE}
+    [Arguments]    ${name}
+    Validate name    ${name}    Employee '${name}' was added successfully.
+    Employee should exist in the database    ${name}    ${DATE}
 
 Validate name
-    [Arguments]  ${name}  ${message}
+    [Arguments]    ${name}    ${message}
     Start Vacalc with no employees
-    Add employee  ${name}  ${DATE}
-    Status message should be  ${message}
-
+    Add employee    ${name}    ${DATE}
+    Status message should be    ${message}
