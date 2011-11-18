@@ -4,6 +4,7 @@ import tempfile
 from org.robotframework.vacalc import VacationCalculator
 from vacalc.ui import VacalcFrame
 from vacalc.employeestore import EmployeeStore, VacalcError
+from vacalc.dateprovider import CurrentDate
 
 
 class VacalcApplication(VacationCalculator):
@@ -12,7 +13,7 @@ class VacalcApplication(VacationCalculator):
         default_db = os.path.join(tempfile.gettempdir(), 'vacalcdb.csv')
         self._db_file= os.environ.get('VACALC_DB', default_db)
         self._store = EmployeeStore(self._db_file)
-        self._frame = VacalcFrame(EmployeeController(self._store))
+        self._frame = VacalcFrame(EmployeeController(self._store), CurrentDate)
         self._frame.show()
 
 
