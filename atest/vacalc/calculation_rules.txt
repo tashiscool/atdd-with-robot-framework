@@ -1,0 +1,42 @@
+*** Settings ***
+Documentation    Holiday credit year: period from 1st of April to 31st of March
+Force Tags       Sprint-2
+Resource         resource.txt
+Test Template    Vacation should be calculated correctly
+
+
+*** Test Cases ***    Start Date    Holiday Year    Days
+
+Started after the credit year ended
+                      2010-03-31    2010            0
+                      2010-04-01    2010            0
+
+Started over a year before
+                      1979-01-01    2011            30
+                      2010-03-01    2011            30
+                      2010-03-31    2011            30
+
+Started exactly a year before
+                      2010-04-01    2011            24
+
+Started less than a year ago
+                      2010-03-01    2010            2
+                      2010-08-01    2011            16
+                      2010-07-31    2011            16
+                      2010-07-01    2011            18
+
+Worked 14 or more days in the first month
+                      2011-03-14    2011            2
+                      2010-08-12    2011            16
+
+Worked less than 14 days in the first month
+                      2011-03-15    2011            0
+                      2010-08-13    2011            14
+
+Public holidays are counted as work days
+                      2009-12-14    2010            8
+                      2009-12-15    2010            6
+
+Leap years are correctly considered
+                      2008-02-12    2008            4
+                      2008-02-13    2008            2

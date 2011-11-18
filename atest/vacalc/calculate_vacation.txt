@@ -1,0 +1,12 @@
+*** Settings ***
+Force Tags    Sprint-2
+Resource      resource.txt
+
+
+***Test Cases***
+
+Show vacation for employee
+    Given current date is 2011-11-24
+    and employee "Janne" with start date 2011-01-01 exists in the system
+    When "Janne" is selected
+    Then 6 days is shown for year 2011
