@@ -1,6 +1,6 @@
 *** Settings ***
 Documentation    Holiday credit year: period from 1st of April to 31st of March
-Force Tags       Sprint-2
+Force Tags       Sprint-2    Regression
 Resource         resource.txt
 Test Template    Vacation should be calculated correctly
 
