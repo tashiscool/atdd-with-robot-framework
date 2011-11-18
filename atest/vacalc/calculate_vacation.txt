@@ -10,3 +10,19 @@ Show vacation for employee
     and employee "Janne" with start date 2011-01-01 exists in the system
     When "Janne" is selected
     Then 6 days is shown for year 2011
+
+
+*** Keywords ***
+
+Current date is ${date}
+    Set Environment Variable    VACALC_DATE    ${date}
+
+Employee "${name}" with start date ${date} exists in the system
+    Start Vacalc with No Employees
+    Add Employee    ${name}    ${date}
+
+"${employee}" is selected
+    Select Employee    ${employee}
+
+${days:\d+} days is shown for year ${year:\d+}
+    Correct Vacation Should Be Shown    ${days}    ${year}

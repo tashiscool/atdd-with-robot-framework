@@ -1,5 +1,7 @@
-from javax.swing import JFrame, JList, JPanel, JLabel, JTextField, JButton, Box, BoxLayout, JScrollPane, JComboBox, ComboBoxModel
+from javax.swing import (JFrame, JList, JPanel, JLabel, JTextField, JButton,
+                         Box, BoxLayout, JTable, JScrollPane)
 from javax.swing.event import ListSelectionListener
+from javax.swing.table import AbstractTableModel
 from java.awt.event import ActionListener
 from java.awt import FlowLayout, BorderLayout, Dimension, Font, Color
 from java.lang import Object
@@ -7,16 +9,16 @@ from java.lang import Object
 
 class VacalcFrame(object):
 
-    def __init__(self, employees):
+    def __init__(self, employees, dateprovider):
         self._frame = JFrame('Vacation Calculator',
                              defaultCloseOperation=JFrame.EXIT_ON_CLOSE)
-        self._frame.setContentPane(self._create_ui(employees))
+        self._frame.setContentPane(self._create_ui(employees, dateprovider))
         self._frame.pack()
 
-    def _create_ui(self, employees):
+    def _create_ui(self, employees, dateprovider):
         panel = JPanel(layout=FlowLayout())
         self._overview = EmployeeOverview(employees, self)
-        self._details = EmployeeDetails(employees)
+        self._details = EmployeeDetails(employees, dateprovider)
         self._welcome = Welcome()
         panel.add(self._overview)
         panel.add(self._welcome)
@@ -102,22 +104,27 @@ class EmployeeList(object):
 
     @property
     def widget(self):
-        return (self._list)
-        return JScrollPane(self._list)
+        # BUGZ: EmployeeList is not scrollable. Adding more employees than
+        # fits in the visible area makes some of them unreachable via UI.
+        # Uncomment the following line to fix the bug:
+        # return JScrollPane(self._list)
+        return self._list
 
 
 class EmployeeDetails(JPanel):
 
-    def __init__(self, employees):
+    def __init__(self, employees, dateprovider):
         JPanel.__init__(self, preferredSize=(400, 200))
         layout = BoxLayout(self, BoxLayout.Y_AXIS)
         self.setLayout(layout)
         self._employees = employees
+        self._dateprovider = dateprovider
         employees.add_change_listener(self)
         self._create_status_label()
         self._create_name_editor()
         self._create_start_date_editor()
         self._create_save_button()
+        self._create_vacation_display()
         self._adding_employee = False
 
     def _create_status_label(self):
@@ -142,6 +149,12 @@ class EmployeeDetails(JPanel):
                                             self._save_button_pushed))
         self._add_with_padding(self._save_button, 5)
 
+    def _create_vacation_display(self):
+        self._display = JTable(name='vacation_display')
+        self._header = self._display.getTableHeader()
+        self.add(self._header)
+        self.add(self._display)
+
     def _add_with_padding(self, component, padding):
         self.add(component)
         self.add(Box.createRigidArea(Dimension(0, padding)))
@@ -156,6 +169,9 @@ class EmployeeDetails(JPanel):
             self._adding_employee = False
         else:
             self._status_label.setText('')
+        self._display.setVisible(True)
+        self._display.setModel(VacationTableModel(employee, self._dateprovider))
+        self._header.setVisible(True)
 
     def edit_new_employee(self):
         self._name_editor.setText('')
@@ -163,6 +179,8 @@ class EmployeeDetails(JPanel):
         self._name_editor.setEditable(True)
         self._start_date_editor.setEditable(True)
         self._save_button.setVisible(True)
+        self._display.setVisible(False)
+        self._header.setVisible(False)
         self._adding_employee = True
 
     def _save_button_pushed(self, event):
@@ -193,6 +211,31 @@ class Welcome(JPanel):
     def __init__(self):
         JPanel.__init__(self, preferredSize=(400,200))
         self.add(JLabel('VaCalc v0.1'))
+
+
+class VacationTableModel(AbstractTableModel):
+    _columns = ['Year', 'Vacation']
+
+    def __init__(self, employee, dateprovider):
+        self._employee = employee
+        self._dateprovider = dateprovider
+
+    def getColumnName(self, index):
+        return self._columns[index]
+
+    def getColumnCount(self):
+        return 2
+
+    def getRowCount(self):
+        return 1
+
+    def getValueAt(self, row, col):
+        date = self._dateprovider()
+        month = date.month
+        year = date.year if date.month > 3 else date.year - 1
+        if col == 0:
+            return year
+        return '%s days' % self._employee.count_vacation(year)
 
 
 def ListenerFactory(interface, func):

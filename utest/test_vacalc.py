@@ -1,7 +1,9 @@
+import os
 import unittest
-from datetime import date
+from datetime import date, datetime
 
 from vacalc.employeestore import EmployeeStore, VacalcError
+from vacalc.dateprovider import CurrentDate
 
 
 class TestEmployeeStore(unittest.TestCase):
@@ -38,6 +40,18 @@ class TestEmployeeStore(unittest.TestCase):
     def _assert_employee(self, employee, name, date):
         self.assertEquals(employee.name, name)
         self.assertEquals(employee.startdate, date)
+
+
+class TestDateProvider(unittest.TestCase):
+
+    def test_in_normal_usage(self):
+        self.assertEquals(CurrentDate().year, datetime.now().year)
+
+    def test_mocked_date_time(self):
+        os.environ['VACALC_DATE'] = '2009-03-01'
+        self.assertEquals(CurrentDate().year, 2009)
+        self.assertEquals(CurrentDate().month, 3)
+        self.assertEquals(CurrentDate().day, 1)
 
 
 if __name__ == '__main__':
