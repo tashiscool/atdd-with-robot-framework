@@ -1,5 +1,5 @@
 *** Settings ***
-Force Tags    Sprint-2
+Force Tags    Sprint-2    Regression
 Resource      resource.txt
 
 
