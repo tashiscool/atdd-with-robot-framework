@@ -3,6 +3,7 @@ Force Tags       Sprint-1    Regression
 Resource         resource.txt
 Test Template    Validate valid name
 
+
 *** Variables ***
 ${DATE}    2010-04-01
 
